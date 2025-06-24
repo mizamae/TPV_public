@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+
+{% load static %}
+{% load i18n %}
+{% load tz %}
+
+	<head>
+		
+		<title>{% block title %}{% include "_brandname.html" %}{% endblock %}</title>
+		
+		<!-- JS, Popper.js, and jQuery -->
+		<link rel="shortcut icon" type="image/ico" href="{% static 'logos/favicon.ico' %}" >
+		<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.css' %}">
+		<!-- <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap-icons.min.css' %}"> --> 
+		<script src="{% static 'js/jquery.js' %}"></script>
+		
+	</head>
+	<body class="py-4">
+		<div class="container container-fluid ">
+			{% block navbar %}
+			<nav class="navbar navbar-light" style="background-color:#0728311c;">
+				<div class="col-2">
+					<img src="{% static 'logos/company_logo_navbar.png' %}" width="100%" /> 
+				</div>
+				<div class="col-8">
+				{% block navbar-center %}
+				{% endblock %}
+				</div>
+				<div class="col-2">
+					{% if user.is_authenticated %}
+					<div class="dropdown">
+						<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							{% if user.get_full_name %}
+								{{ user.get_full_name|truncatechars:20 }}
+							{% else %}
+								{{ user.get_username|truncatechars:20 }}
+							{% endif %}
+						</button>
+						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+							<a class="dropdown-item" href="{% url 'UsersAPP_changePassword' %}">Change password</a>
+							<form method="post" action="{% url 'logout' %}">
+								{% csrf_token %}
+								<button class="dropdown-item" type="submit">Logout</button>
+							</form>
+						</div>
+					</div>
+					{% endif %}
+				</div>
+			</nav>
+			<p>&nbsp;</p>
+			{% endblock %}
+		</div>
+
+		<div class="container container-fluid">
+			{% block container %}
+			{% endblock %}
+		</div>	
+		
+		<div class="container sticky-bottom">
+			{% block footer %}
+			<footer class="footer mt-auto" style="background-color:#0728311c;">
+				<hr>
+				<div class="row">
+					<div class="col-lg-3 col-md-6 text-center align-middle">
+						<p>   &copy; {% include "_brandname.html" %} {% now 'Y' %}</p>
+					</div>
+					<div class="col-lg-3 d-none d-lg-block align-middle">
+						<p id="systemTime"></p>
+					</div>
+					<div class="col-lg-3 d-none d-lg-block align-middle">
+					</div>
+					<div class="col-lg-3 col-md-6 text-center align-middle">
+						<p>{% trans "Proudly built on " %}
+							<img class="img-fluid"	src="{% static 'img/icons8-django-50.svg' %}" alt="django">
+						</p>
+					</div>
+				</div>
+			</footer>
+			{% endblock %}
+		</div>
+		
+		<script src="{% static 'js/jquery-ui.min.js' %}"></script> 
+		<script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+		<script src="{% static 'bootstrap/js/bootstrap-tabs.js' %}"></script>
+		
+	</body>
+</html>
+
+
+
+
+{% block app_scripts %}
+
+<script>
+
+	// this gets the CSRF cookie to perform posts
+function getCookie(name) {
+	let cookieValue = null;
+	if (document.cookie && document.cookie !== '') {
+		const cookies = document.cookie.split(';');
+		for (let i = 0; i < cookies.length; i++) {
+			const cookie = cookies[i].trim();
+			// Does this cookie string begin with the name we want?
+			if (cookie.substring(0, name.length + 1) === (name + '=')) {
+				cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+				break;
+			}
+		}
+	}
+	return cookieValue;
+}
+const csrftoken = getCookie('csrftoken');
+
+{% block local_scripts %}
+{% endblock local_scripts %}
+
+setInterval(function(){
+    $.ajax({
+		type: "POST",
+		url: "/ping/",
+		headers: {'X-CSRFToken': csrftoken},
+		data: JSON.stringify({ 
+			username: "{{ user.get_username }}",
+		}),
+		dataType: 'json',
+		success: function(result) {
+			console.log('ok');
+		},
+		error: function(result) {
+			window.location.replace("/");
+		}
+	});
+}, 60000);
+
+$("a, input").click(function(e) {
+	//e.preventDefault(); // this disables the default behavior of the a controls (link)
+	$.ajax({
+		type: "POST",
+		url: "/tracker/",
+		headers: {'X-CSRFToken': csrftoken},
+		data: JSON.stringify({ 
+			href: this.href, // < note use of 'this' here
+			text: (this.innerText!="") ? this.innerText : this.title,
+			pathname: this.pathname
+		}),
+		dataType: 'json',
+		success: function(result) {
+			console.log('ok');
+		},
+		error: function(result) {
+			console.log('error');
+		}
+	});
+});
+
+function page_reload(delay){
+	setTimeout(() => {
+		window.location.reload();
+	}, delay);
+}
+
+function filterTable(tableID,inputIDs,searchcols) {
+	// Declare variables
+	let table, tr, td, i, txtValue;
+	const filter=[];
+	for (i = 0; i < inputIDs.length; i++) {
+		if (document.getElementById(inputIDs[i]).value != ""){
+			filter.push(document.getElementById(inputIDs[i]).value.toUpperCase());
+		}
+		else{filter.push(document.getElementById(inputIDs[i]).value);}
+	}
+	
+	table = document.getElementById(tableID);
+	tr = table.getElementsByTagName("tr");
+
+  // Loop through all table rows, and hide those who don't match the search query
+ 	var cols;
+  	let result=false;
+  	for (i = 1; i < tr.length; i++) {
+		result=false;
+		for (j = 0; j < filter.length; j++) {
+			if (filter[j]=="ANY" || filter[j]==""){result = true;}
+			else{
+				if (searchcols[j] == null){cols = tr[i].getElementsByTagName("td");}
+				else{cols = [tr[i].getElementsByTagName("td")[searchcols[j]],];}
+
+				for (col = 0; col < cols.length; col++)
+				{
+					td = cols[col];
+					if (td) {
+						txtValue = td.textContent || td.innerText;
+						if (txtValue.toUpperCase().indexOf(filter[j]) > -1) {
+							result = true;
+							break
+						} else {
+							result=false;
+						}
+					}
+				}
+				if (result==false){break;}
+			}
+  		}
+		if (result){
+			tr[i].style.display = "";
+			tr[i].classList.remove('collapse');
+		}
+		else{tr[i].style.display = "none";}
+	}
+}
+	
+</script>
+
+{% endblock app_scripts %}

@@ -1,0 +1,39 @@
+{% load i18n %}
+{% load static %}
+{% load usersapp_extras %}
+
+
+<div class="d-flex">
+    <div class="nav flex-column w-15 nav-pills me-3" id="v-pills-tab2" role="tablist" aria-orientation="vertical">
+		{% for tab in productapps_tabs %}
+		<a class="nav-link {% if tab.active %} active {% endif %}" id="v-pills-products{{ tab.id }}-tab" data-bs-toggle="pill" data-bs-target="#v-pills-products{{ tab.id }}" type="button" role="tab" aria-controls="v-pills-products{{ tab.id }}" aria-selected="{% if tab.active %} true {% else %} false {% endif %} ">
+            {{ tab.description }}
+        </a>
+		{% endfor %}
+    </div>
+    <div class="tab-content" id="v-pills-tabContent2">
+		{% for tab in productapps_tabs %}
+        <div class="tab-pane fade show {% if tab.active %} active {% endif %}" id="v-pills-products{{ tab.id }}" role="tabpanel" aria-labelledby="v-pills-products{{ tab.id }}-tab">
+            <div class="card-group">
+				{% for product in tab.items|slice:"0:6" %}	
+				{% include "ProductsAPP/_product_card.html" %}			
+				{% endfor %}
+			</div>
+			<div class="card-group">
+				{% for product in tab.items|slice:"6:11" %}	
+				{% include "ProductsAPP/_product_card.html" %}			
+				{% endfor %}
+			</div>
+        </div>
+		{% endfor %}
+    </div>
+</div>
+
+<!-- <div class = "row">
+	<video class="border border-dark col-12 rounded-3 shadow" controls autoplay loop>
+		<source src="{% static '/videos/develink-general.mp4' %}" type="video/mp4"/>
+	</video>
+</div> -->
+
+
+		

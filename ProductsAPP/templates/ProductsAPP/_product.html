@@ -1,0 +1,14 @@
+{% load i18n %}
+{% load static %}
+
+<div class="row">
+    <div class="col-4">
+        <img src="{% static productimage %}" class="rounded w-100" alt="E150" style="background-color:rgb(214, 214, 214) ;">
+    </div>
+    <div class="col-8">
+        {{ producttext }}
+        <p class="lead">
+        {% include "ProductsAPP/_p10_producttext.html" %}
+        </p>
+    </div>
+</div>

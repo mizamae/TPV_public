@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block navbar-center %}
+<h3 class="text-center">{% trans "Pattas S.L." %}</h3>
+{% endblock %}
+
+{% block container %}
+
+{% if user.canSeeAPP %}
+	{% include "_detail_tabs.html" with tab0='General info' tab1='Products' tab2='Applications'  active_tab0='active' active_tab1='' active_tab2='' %}
+{% else %}
+	{% include "_detail_tabs.html" with tab0='General info' tab1='Products' tab2=''  active_tab0='active' active_tab1='' active_tab2='' %}
+{% endif %}
+<div class="tab-content pt-5" id="tab-content">
+	<div class="tab-pane active" id="fill-tabpanel-0" role="tabpanel" aria-labelledby="fill-tab-0">
+		{% include "general_info.html" %}
+	</div>
+	<div class="tab-pane" id="fill-tabpanel-1" role="tabpanel" aria-labelledby="fill-tab-1">
+		{% include "ProductsAPP/home.html" %}
+	</div>
+	{% if user.canSeeAPP %}
+	<div class="tab-pane" id="fill-tabpanel-2" role="tabpanel" aria-labelledby="fill-tab-2">
+		{% include "ExternalAPPs/home.html" %}
+	</div>
+	{% endif %}
+</div>
+{% endblock container %}
+
+
+
+{% block scripts %}
+
+{% endblock scripts %}

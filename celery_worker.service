@@ -1,0 +1,15 @@
+[Unit]
+Description=celery worker daemon
+After=network.target
+
+[Service]
+User=mikelza
+Group=www-data
+Restart=always
+RestartSec=1
+WorkingDirectory=/home/mikelza/TPV_public/
+ExecStart= ./env/bin/celery --app TPV_public worker -l info --pool solo
+
+
+[Install]
+WantedBy=multi-user.target

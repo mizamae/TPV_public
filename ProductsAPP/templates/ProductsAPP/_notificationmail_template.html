@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    {% load static %}
+    {% load i18n %}
+    <head>
+		
+		<!-- <title>{% block title %}{% include "_brandname.html" %}{% endblock %}</title>
+		<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.css' %}">
+        <script src="{% static 'js/jquery.js' %}"></script>	
+        <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script> -->
+	</head>
+    <body>
+        <br>
+        <div style="width: 100%;">
+            <div style="width: 25%;"></div>
+            <div style="width: 50%; text-align: center;">
+                <img src="{{ image }}"/> 
+                <!-- <h1 class="display-1" style="color:#D6FB0F;">Let's go electric</h1> -->
+            </div>
+            <div style="width: 25%;"></div>
+        </div>
+        <div class="row">
+            <div class = "col-3"></div>
+            <div class = "col-6">
+                <h2>{{ heading }}</h2>
+                <div style="width: 100%;">
+                    <div style="width: 25%;"></div>
+                    <div style="width: 50%;">
+                        <h4>Changes</h4>
+                        <p>Product: {{ product_code }}</p>
+                        <p>Item updated: {{ changed }}</p>
+                    </div>
+                    <div style="width: 25%;"></div>
+                </div>
+                <h3>Visit the customer's portal at {{ link }}</h3>
+                <p style="font-size: 10;">Do not respond to this email, it is an unsupervised account.</p>
+            </div>
+            <div class = "col-3"></div>
+        </div>
+    </body>
+</html>

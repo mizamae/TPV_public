@@ -1,0 +1,25 @@
+{% load i18n %}
+{% load static %}
+{% load usersapp_extras %}
+{% load embed_video_tags %}
+
+<div class="card" style="width: 20rem;">
+    <div class="card-header">
+        <!-- <p class="h2 text-center">{{ video.title }}</p> -->
+    </div>
+    <div class = "row">
+        {% if video.video_url %}
+        {% video video.video_url '100% x 100%' %}
+        {% else %}
+        <video controls> <!-- class="border border-dark col-12 rounded-3 shadow" -->
+            <source src="{{ video.video_file.url }}" type="video/mp4"/>
+        </video>
+        {% endif %}
+    </div>
+    <div class="card-body" style="background-color: rgb(237, 237, 237);">
+        <h5 class="card-title">{{ video.title }}</h5>
+        <p class="card-text">
+            {{ video.text }}
+        </p>
+    </div>
+</div>
