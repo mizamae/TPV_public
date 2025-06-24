@@ -1,14 +1,14 @@
 [Unit]
-Description=gunicorn daemon for customer portal
+Description=gunicorn daemon for public TPV
 After=network.target
 
 [Service]
-User=mikelza
+User=root
 Group=www-data
 Restart=always
-RestartSec=1
-WorkingDirectory=/home/mikelza/TPV_public
-ExecStart= /home/mikelza/TPV_public/env/bin/gunicorn --access-logfile - --error-logfile /home/mikelza/TPV_public/logs/gunicorn-error.log --timeout 60 --workers 2 --preload --bind unix:/home/mikelza/TPV_public/run/docapp.sock TPV_public.wsgi:application
+RestartSec=5
+WorkingDirectory=/root/TPV_public
+ExecStart= /root/TPV_public/env/bin/gunicorn --access-logfile - --error-logfile /root/TPV_public/logs/gunicorn-error.log --timeout 60 --workers 2 --preload --bind unix:/root/TPV_public/run/app.sock TPV_public.wsgi:application
 
 
 [Install]

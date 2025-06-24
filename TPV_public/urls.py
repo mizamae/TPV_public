@@ -24,17 +24,19 @@ from django.conf.urls.static import static
 
 from . import views
 
+SERVER_PREPEND = "public-tpv"
+
 urlpatterns = [
-    path("", views.home , name="home"),
-    path('tracker/', views.tracker , name="tracker"),
-    path('ping/', views.ping , name="ping"),
-    path('products/', include('ProductsAPP.urls')),
-    path("accounts/", include("django.contrib.auth.urls")),
-    path('admin/', admin.site.urls),
-    path('django_plotly_dash/', include('django_plotly_dash.urls')),
+    path(SERVER_PREPEND+"/", views.home , name="home"),
+    path(SERVER_PREPEND+'/tracker/', views.tracker , name="tracker"),
+    path(SERVER_PREPEND+'/ping/', views.ping , name="ping"),
+    path(SERVER_PREPEND+'/products/', include('ProductsAPP.urls')),
+    path(SERVER_PREPEND+"/accounts/", include("django.contrib.auth.urls")),
+    path(SERVER_PREPEND+'/admin/', admin.site.urls),
+    path(SERVER_PREPEND+'/django_plotly_dash/', include('django_plotly_dash.urls')),
 ]
 
 # Check DEBUG mode to adds additional URL patterns
 if settings.DEBUG: 
-    urlpatterns += static(settings.MEDIA_URL,
+    urlpatterns += static(SERVER_PREPEND+'/'+settings.MEDIA_URL,
                           document_root=settings.MEDIA_ROOT)
