@@ -10,48 +10,106 @@ from itertools import chain
 import os
 import json
 import base64
+import io
 
-from .models import Product
+from .models import Product, ProductFamily
 # Create your views here.
 
 import logging
 logger = logging.getLogger("users")
 
 @csrf_exempt
-def updateProduct(request):
+def updateFamily(request):
     if request.method == 'POST':
         url = request.build_absolute_uri()
-        logger.info("Request to update product from origin: " + str(url))
-
-        if 'https' in url:
-            return HttpResponse(status=500,content='Invalid operation')
+        logger.info("Request to update family from origin: " + str(url))
         
         from itsdangerous.serializer import Serializer
         s = Serializer(settings.SIGNATURE_KEY)
 
         req_info = json.load(request)
-        sig_okay, payload = s.loads_unsafe(req_info['signature'])
+        sig_okay, payload = s.loads_unsafe(req_info)
         
         if sig_okay:
             try:
                 #print(str(payload))
                 payload=json.loads(payload)
-                doc_code = payload['code']
-                doc_name = payload['name']
-                doc_extension = payload['extension']
-                logger.info("Request to update: " + str(doc_code))
-                products = list(chain(Product.getAffectedInstances(doc_code=doc_code),CustomerProduct.getAffectedInstances(doc_code=doc_code)))
-                logger.info("Products affected: " + str(products))
-                if products == []:
-                    return HttpResponse(status=404)
-                
-                data = base64.b64decode(bytes(payload['content'], 'utf-8'))
-                file=Product.getPathforFile(doc_name)
-                with open(file, "wb") as writer:
-                    writer.write(data)
+                created = False
+                try:
+                    family = ProductFamily.objects.get(id=payload['id'])
+                except ProductFamily.DoesNotExist:
+                    created = True
+                    family = ProductFamily.objects.create(**{'id':payload['id'],'name':payload['name'],
+                                                           'short_description':payload['short_description'],
+                                                           'long_description':payload['long_description']})
 
-                for product in products:
-                    product.updateFile(doc_code=doc_code,file=doc_name)
+                if payload.get('image',None):            
+                    data = base64.b64decode(bytes(payload['image'], 'utf-8'))
+                    file = 'family'+str(payload['id'])+payload['image_extension']
+                    
+                    temp_thumb = io.BytesIO(data)
+                    family.image.save(
+                        file,
+                        temp_thumb,
+                        save=False,
+                    )
+                if not created:
+                    family.name=payload['name']
+                    family.short_description=payload['short_description']
+                    family.long_description=payload['long_description']
+                    family.save()
+                    return HttpResponse(status=200)
+                else:
+                    return HttpResponse(status=201)
+            except Exception as ex:
+                logger.error(str(ex))
+                return HttpResponse(status=500)
+        else:
+            logger.error("Invalid request signature")
+            return HttpResponse(status=500)
+
+    else:
+        return HttpResponse(status=500)
+
+
+@csrf_exempt
+def updateProduct(request):
+    if request.method == 'POST':
+        url = request.build_absolute_uri()
+        logger.info("Request to update product from origin: " + str(url))
+        
+        from itsdangerous.serializer import Serializer
+        s = Serializer(settings.SIGNATURE_KEY)
+
+        req_info = json.load(request)
+        sig_okay, payload = s.loads_unsafe(req_info)
+        
+        if sig_okay:
+            try:
+                #print(str(payload))
+                payload=json.loads(payload)
+                created = False
+                try:
+                    product = Product.objects.get(id=payload['id'])
+                except Product.DoesNotExist:
+                    created = True
+                    product = Product.objects.create(**{'id':payload['id'],'name':payload['name'],
+                                                           'details':payload['details'],
+                                                           'stock':payload['stock'],
+                                                           'discount':payload['discount'],
+                                                           'promotion':payload['promotion'],
+                                                           'pvp':payload['pvp']})
+                    
+                
+                if payload.get('image',None):            
+                    data = base64.b64decode(bytes(payload['image'], 'utf-8'))
+                    file = 'product'+str(payload['id'])+payload['image_extension']
+                    temp_thumb = io.BytesIO(data)
+                    product.image.save(
+                        file,
+                        temp_thumb,
+                        save=False,
+                    )
 
                 return HttpResponse(status=201)
             except Exception as ex:

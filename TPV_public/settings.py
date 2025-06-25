@@ -272,8 +272,10 @@ TIME_ZONE_OBJ = pytz.timezone(TIME_ZONE)
 
 #UPLOAD_TO = join(BASE_DIR,  'uploads')
 
-FILE_DIR = join(BASE_DIR.parent,'local')
-MEDIA_ROOT = join(FILE_DIR,'media')
+MEDIA_ROOT = join(BASE_DIR,'media')
+if not exists(MEDIA_ROOT):
+    mkdir(MEDIA_ROOT)
+
 MEDIA_URL = '/media/' # Public URL at the browser
 
 LOCALE_PATHS = [ 
