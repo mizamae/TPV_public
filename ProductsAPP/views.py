@@ -51,7 +51,7 @@ def updateFamily(request):
                     family.image.save(
                         file,
                         temp_thumb,
-                        save=False,
+                        save=True,
                     )
                 if not created:
                     family.name=payload['name']
@@ -93,7 +93,9 @@ def updateProduct(request):
                     product = Product.objects.get(id=payload['id'])
                 except Product.DoesNotExist:
                     created = True
-                    product = Product.objects.create(**{'id':payload['id'],'name':payload['name'],
+                    product = Product.objects.create(**{'id':payload['id'],
+                                                            'name':payload['name'],
+                                                            'family':ProductFamily.objects.get(id=payload['family']),
                                                            'details':payload['details'],
                                                            'stock':payload['stock'],
                                                            'discount':payload['discount'],
@@ -108,10 +110,21 @@ def updateProduct(request):
                     product.image.save(
                         file,
                         temp_thumb,
-                        save=False,
+                        save=True,
                     )
 
-                return HttpResponse(status=201)
+                if not created:
+                    product.name=payload['name'] if payload.get('name',None) else product.name
+                    product.details=payload['details'] if payload.get('details',None) else product.details
+                    product.stock=payload['stock'] if payload.get('stock',None) else product.stock
+                    product.discount=payload['discount'] if payload.get('discount',None) else product.discount
+                    product.promotion=payload['promotion'] if payload.get('promotion',None) else product.promotion
+                    product.pvp=payload['pvp'] if payload.get('pvp',None) else product.pvp
+                    product.save()
+                    return HttpResponse(status=200)
+                else:
+                    return HttpResponse(status=201)
+                
             except Exception as ex:
                 logger.error(str(ex))
                 return HttpResponse(status=500)

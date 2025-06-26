@@ -14,7 +14,11 @@
                         <div class="portfolio-hover">
                             <div class="portfolio-hover-content"><i class="fas fa-plus fa-3x"></i></div>
                         </div>
+                        {% if family.image %}
                         <img loading="lazy" class="img-fluid" src="{{ family.image.url }}" alt="..." />
+                        {% else %}
+                        <img loading="lazy" class="img-fluid" src="" alt="No image" />
+                        {% endif %}
                     </a>
                     <div class="portfolio-caption">
                         <div class="portfolio-caption-heading">{{ family.name }}</div>
@@ -34,20 +38,24 @@
                                         <h2 class="text-uppercase">{{ family.name }}</h2>
                                         <p class="item-intro text-muted">{{ family.long_description }}</p>
                                         <div class="row">
-                                            {% for product in family.products %}
+                                            {% for product in family.products.all %}
                                             <div class="col-lg-4">
                                                 <div class="team-member">
+                                                    {% if product.image %}
                                                     <img loading="lazy" class="mx-auto rounded-1" src="{{ product.image.url }}" alt="..." />
+                                                    {% else %}
+                                                    <img loading="lazy" class="mx-auto rounded-1" src="" alt="No image" />
+                                                    {% endif %}
                                                     <h4>{{ product.name }}</h4>
                                                     <p class="text-muted">{{ product.details }}</p>
                                                     <ul class="list-inline">
                                                         <li>
                                                             <strong>Precio:</strong>
-                                                            {{ product.pvp }}
+                                                            {{ product.pvp|floatformat:2 }}€
                                                         </li>
                                                         <li>
                                                             <strong>Stock:</strong>
-                                                            {{ product.stock }}
+                                                            {{ product.stock|floatformat:0 }}
                                                         </li>
                                                     </ul>
                                                 </div>

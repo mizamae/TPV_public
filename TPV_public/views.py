@@ -8,11 +8,12 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 import json
 User=get_user_model()
 
-from ProductsAPP.models import Product
+from ProductsAPP.models import Product, ProductFamily
 
 def home(request):
+    product_families = ProductFamily.objects.all()
     
-    return render(request, 'home_1.html',)
+    return render(request, 'home_1.html',{'product_families':product_families})
 
 @ensure_csrf_cookie
 def tracker(request):
