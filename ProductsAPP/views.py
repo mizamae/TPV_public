@@ -71,6 +71,33 @@ def updateFamily(request):
     else:
         return HttpResponse(status=500)
 
+@csrf_exempt
+def deleteFamily(request):
+    if request.method == 'POST':
+        url = request.build_absolute_uri()
+        logger.info("Request to delete family from origin: " + str(url))
+        
+        from itsdangerous.serializer import Serializer
+        s = Serializer(settings.SIGNATURE_KEY)
+
+        req_info = json.load(request)
+        sig_okay, payload = s.loads_unsafe(req_info)
+        
+        if sig_okay:
+            try:
+                payload=json.loads(payload)
+                family = ProductFamily.objects.get(id=payload['id'])
+                family.delete()
+                return HttpResponse(status=200)
+            except Exception as ex:
+                logger.error(str(ex))
+                return HttpResponse(status=500)
+        else:
+                logger.error("Invalid request signature")
+                return HttpResponse(status=500)
+
+    else:
+        return HttpResponse(status=500)
 
 @csrf_exempt
 def updateProduct(request):
@@ -135,7 +162,33 @@ def updateProduct(request):
     else:
         return HttpResponse(status=500)
 
+@csrf_exempt
+def deleteProduct(request):
+    if request.method == 'POST':
+        url = request.build_absolute_uri()
+        logger.info("Request to delete product from origin: " + str(url))
+        
+        from itsdangerous.serializer import Serializer
+        s = Serializer(settings.SIGNATURE_KEY)
 
+        req_info = json.load(request)
+        sig_okay, payload = s.loads_unsafe(req_info)
+        
+        if sig_okay:
+            try:
+                payload=json.loads(payload)
+                product = Product.objects.get(id=payload['id'])
+                product.delete()
+                return HttpResponse(status=200)
+            except Exception as ex:
+                logger.error(str(ex))
+                return HttpResponse(status=500)
+        else:
+                logger.error("Invalid request signature")
+                return HttpResponse(status=500)
+
+    else:
+        return HttpResponse(status=500)
     
 def viewProduct(request,product_uuid):
     product = get_object_or_404(Product, product_uuid=product_uuid)
