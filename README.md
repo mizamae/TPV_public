@@ -33,7 +33,7 @@ Once up and running, reaching at the predefined endpoint (webpage-endpoint.com i
 ![default page](/assets/images/default_page.png)
 The page is structured in sections that can be easily reached by scrolling down or hitting in the navigation bar titles. Needless to say this page can be fully customizable in appearance and form.
 
-The cool side of this is that a Django application is running behind the scenes with the following models available:
+The cool side of this is that a Django application is running behind the scenes (on a Postgresql database) with the following models available:
 
 - Product family: this serves as container to group products that share a similar feature such as dog food, cat food, etc...
 - Product: is every single product that you can offer to the visitors.

@@ -19,6 +19,8 @@
         <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+        
+        <script src="https://www.google.com/recaptcha/enterprise.js?render=6Lfas3IrAAAAAFocwk6siWQEVSpzj_lLmmRzKGrF"></script>
     </head>
     <body id="page-top">
         <!-- Navigation-->
@@ -101,6 +103,18 @@
             </div>
         </footer>
         
+
+        {% if messages %}
+        <script>
+            setTimeout(
+                function () {
+                    container = document.getElementById("messages_container");
+                    if (container){container.style.display = "none";}
+                },
+                3000 // time in milliseconds
+            );
+        </script>
+        {% endif %}
 
         <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
         <!-- Core theme JS-->

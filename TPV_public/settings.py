@@ -106,13 +106,17 @@ INSTALLED_APPS = [
     'django_plotly_dash.apps.DjangoPlotlyDashConfig',
     'crispy_forms',
     "crispy_bootstrap5",
-    
+    'django_recaptcha',
+
     'embed_video',
 
     'TPV_public',
     'UsersAPP',
     'ProductsAPP',
 ]
+
+RECAPTCHA_PUBLIC_KEY = env('RECAPTCHA_PUBLIC_KEY')
+RECAPTCHA_PRIVATE_KEY = env('RECAPTCHA_PRIVATE_KEY')
 
 from django.contrib.messages import constants as messages
 

@@ -28,6 +28,7 @@ SERVER_PREPEND = ""
 
 urlpatterns = [
     path(SERVER_PREPEND, views.home , name="home"),
+    path(SERVER_PREPEND+'contactus/', views.contact , name="contactForm"),
     path(SERVER_PREPEND+'tracker/', views.tracker , name="tracker"),
     path(SERVER_PREPEND+'ping/', views.ping , name="ping"),
     path(SERVER_PREPEND+'products/', include('ProductsAPP.urls')),
