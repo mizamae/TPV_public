@@ -11,7 +11,7 @@ Deberías haber recibido una copia de la Licencia Pública General de GNU junto 
 [![es](https://img.shields.io/badge/lang-es-yellow.svg)](README.es.md)
 
 Esto crea una aplicación web (conectada a Tiny TPV) que puede utilizarse como un sitio web comercial. Incluye las siguientes características:
-- Diseño responsivo para una visualización cómoda en cualquier dispositivo
+- Diseño adaptable para una visualización cómoda en cualquier dispositivo
 - Actualización automática de productos desde Tiny TPV (requiere una configuración menor en la aplicación Tiny TPV)
 
 ## Instalación
@@ -24,7 +24,9 @@ pip install -r requirements.txt
 ```
 
 El servidor web debe configurarse según sea necesario dependiendo del software utilizado. En este repositorio, se entrega una aplicación de ejemplo configurada con Nginx y Gunicorn.
+
 La configuración predeterminada para Nginx está detallada en el archivo ![Configuración de Nginx](/customerPortal.conf).
+
 Los archivos para configurar los servicios de Gunicorn y Celery se proporcionan en ![Configuración de Gunicorn](/gunicorn.service) y ![Configuración de Celery](/celery_worker.service) respectivamente.
 
 ## Apariencia
